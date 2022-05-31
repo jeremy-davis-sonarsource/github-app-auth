@@ -1,6 +1,7 @@
 const axios = require("axios").default;
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
+const { exit } = require("process");
 
 class GitHubAppConnector {
   baseURL;
@@ -66,6 +67,19 @@ class GitHubAppConnector {
       .catch((error) => console.log(error.code, error));
   }
 
+  getBranchInfo(repo, accessToken, branch) {
+    return axios
+      .get(`/repos/${repo}/branches/${branch}`, {
+        baseURL: this.baseURL,
+        headers: {
+          Authorization: `token ${accessToken}`,
+          Accept: "application/vnd.github.machine-man-preview+json",
+        },
+      })
+      .then((response) => console.log(response.data))
+      .catch((error) => console.log(error.code, error));
+  }
+
   /* Follows:
    * https://docs.github.com/en/developers/apps/building-github-apps/authenticating-with-github-apps
    */
@@ -100,13 +114,24 @@ class GitHubAppConnector {
 async function run() {
   const args = process.argv.slice(2);
 
-  if (args.length !== 3) {
+  if (args.length < 3 || args.length > 4) {
     console.log(
-      `This requires 3 arguments: the base url, the appId, and the full repo name. For example: 'yarn start https://github.company.com/api/v3 32 Sonar/awesome-repo'`
+      `This requires 3 to 4 arguments:
+        - base url
+        - appId
+        - full repo name
+        - [optional] branch name
+      
+      For example: 
+        yarn start https://github.company.com/api/v3 32 Sonar/awesome-repo
+      or
+        yarn start https://github.company.com/api/v3 32 Sonar/awesome-repo feature-branch
+      `
     );
+    exit(1);
   }
 
-  const [baseURL, appId, repo] = args;
+  const [baseURL, appId, repo, branch] = args;
 
   const connector = new GitHubAppConnector(baseURL);
 
@@ -115,7 +140,11 @@ async function run() {
   const installationId = await connector.getInstallationId(repo);
   const accessToken = await connector.getInstallationAccessToken(installationId);
 
-  connector.getBranches(repo, accessToken);
+  if (branch) {
+    connector.getBranchInfo(repo, accessToken, branch);
+  } else {
+    connector.getBranches(repo, accessToken);
+  }
 }
 
 run();
