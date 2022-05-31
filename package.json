@@ -1,0 +1,16 @@
+{
+  "name": "ghe-app-auth",
+  "version": "1.0.0",
+  "description": "Test a Github Enterprise App",
+  "main": "index.js",
+  "author": "Jeremy Davis <jeremy.davis@sonarsource.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "jsonwebtoken": "^8.5.1"
+  }
+}
