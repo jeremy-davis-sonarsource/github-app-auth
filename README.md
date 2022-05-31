@@ -18,6 +18,12 @@ yarn
 ## run
 
 ```javascript
+yarn start [github URL] [App ID] [repository name] [branch]
+```
+
+for instance:
+
+```javascript
 yarn start https://github-enterprise.company.com/api/v3 32 owner/repo
   - or -
 yarn start https://github-enterprise.company.com/api/v3 32 owner/repo main-branch
