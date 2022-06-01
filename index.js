@@ -4,11 +4,9 @@ const jwt = require("jsonwebtoken");
 const { exit } = require("process");
 
 class GitHubAppConnector {
-  baseURL;
-  jwtToken;
-
   constructor(baseURL) {
     this.baseURL = baseURL;
+    this.jwtToken = undefined;
   }
 
   getInstallationAccessToken(id) {
